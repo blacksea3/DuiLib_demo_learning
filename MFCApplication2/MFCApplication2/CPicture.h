@@ -36,4 +36,5 @@ private:
 public:
 	CStatic m_picDraw;
 	virtual BOOL OnInitDialog();
+	BOOL PreTranslateMessage(MSG* pMsg);
 };

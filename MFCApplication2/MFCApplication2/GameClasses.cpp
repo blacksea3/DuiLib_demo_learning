@@ -164,6 +164,36 @@ bool Map::isGameFinished()
 	return false;
 }
 
+void Map::addBirdY()
+{
+	Point currentBirdPoint = m_bird->GetPoint();
+	Size currentBirdSize = m_bird->GetSize();
+	if (currentBirdPoint.y + currentBirdSize.height / 2 + BIRD_MOVEY_SPEED <= m_maxY)
+	{
+		currentBirdPoint.y += BIRD_MOVEY_SPEED;
+		m_bird->SetPoint(currentBirdPoint);
+	}
+}
+
+void Map::minusBirdY()
+{
+	Point currentBirdPoint = m_bird->GetPoint();
+	Size currentBirdSize = m_bird->GetSize();
+	if (currentBirdPoint.y - currentBirdSize.height / 2 - BIRD_MOVEY_SPEED >= m_minY)
+	{
+		currentBirdPoint.y -= BIRD_MOVEY_SPEED;
+		m_bird->SetPoint(currentBirdPoint);
+	}
+}
+
+void Map::setMaxMinXY(int minX, int minY, int maxX, int maxY)
+{
+	m_minX = minX;
+	m_minY = minY;
+	m_maxX = maxX;
+	m_maxY = maxY;
+}
+
 void Map::draw(CDC *pDC, CRect &rectPicture)
 {
 	CBrush newBrush;   // 用于创建新画刷

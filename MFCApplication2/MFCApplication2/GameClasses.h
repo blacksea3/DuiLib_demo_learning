@@ -26,6 +26,8 @@ using namespace std;
 #define PIPEDOWN_INIT_HEIGHT 20
 
 #define PIPE_SPEED 10
+#define UPDATE_INTERVAL 100 //ms
+#define BIRD_MOVEY_SPEED 20
 
 //点, 包含x和y坐标
 struct Point
@@ -103,6 +105,10 @@ class Map
 private:
 	vector<Pipe*> m_pipes;
 	Bird* m_bird;
+	int m_minX;
+	int m_minY;
+	int m_maxX;
+	int m_maxY;
 public:
 	Map();
 	~Map();
@@ -111,6 +117,9 @@ public:
 	void draw(CDC *pDC, CRect &rectPicture);
 	void remove();
 	bool isGameFinished();
+	void addBirdY();
+	void minusBirdY();
+	void setMaxMinXY(int minX, int minY, int maxX, int maxY);
 };
 
 //画图, 全部都是静态方法, 不保存任何变量

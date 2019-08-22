@@ -19,14 +19,14 @@ using namespace std;
 #define PIPEUP_INIT_CENTERX 350
 #define PIPEUP_INIT_CENTERY 300
 #define PIPEUP_INIT_WIDTH 100
-#define PIPEUP_INIT_HEIGHT 20
+#define PIPE_MIN_HEIGHT 100
 #define PIPEDOWN_INIT_CENTERX 350
 #define PIPEDOWN_INIT_CENTERY 50
 #define PIPEDOWN_INIT_WIDTH 100
-#define PIPEDOWN_INIT_HEIGHT 20
 
+#define PIPE_EXPECT_BIRD_EXTRA_INTERVALY 50 
 #define PIPE_SPEED 10
-#define UPDATE_INTERVAL 100 //ms
+#define UPDATE_INTERVAL 40 //ms
 #define BIRD_MOVEY_SPEED 20
 
 //点, 包含x和y坐标
@@ -48,16 +48,16 @@ struct Point
 //尺寸, 包含高度和宽度
 struct Size
 {
-	int height;
 	int width;
+	int height;
 	Size()
 	{
 		;
 	}
-	Size(int inputHeight, int inputWidth)
+	Size(int inputWidth, int inputHeight)
 	{
-		height = inputHeight;
 		width = inputWidth;
+		height = inputHeight;
 	}
 };
 
@@ -94,9 +94,13 @@ public:
 //管道
 class Pipe : public RectangleObject
 {
+private:
+	bool IsLocationUp; //上方的
 public:
-	Pipe(Point inputPoint, Size inputSize);
+	Pipe(Point inputPoint, Size inputSize, bool isUp, int maxY);
 	~Pipe();
+	void autoGenerateY(int maxY);
+	void setIsLocationUp(bool isUp);
 };
 
 //地图
@@ -109,6 +113,9 @@ private:
 	int m_minY;
 	int m_maxX;
 	int m_maxY;
+	void fillBackground(CDC* pDC, CRect &rectPicture);
+	void drawBird(CDC *pDC, CRect &rectPicture);
+	void Map::drawPipe(CDC *pDC, CRect &rectPicture);
 public:
 	Map();
 	~Map();

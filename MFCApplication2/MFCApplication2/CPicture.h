@@ -32,7 +32,6 @@ private:
 #define POINT_COUNT 100
 	int m_nzValues[POINT_COUNT];
 	Map* m_map = nullptr;
-	void DrawWave(CDC*, CRect&);
 public:
 	CStatic m_picDraw;
 	virtual BOOL OnInitDialog();

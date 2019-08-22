@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "afxdialogex.h"
 #include "GameClasses.h"
+#include <random>
 
 //基类, 矩形对象
 RectangleObject::RectangleObject()
@@ -83,13 +84,35 @@ void Bird::Destroy()
 Bird *Bird::m_Bird_pInstance = NULL;  //静态类变量类外定义/初始化
 
 //管道
-Pipe::Pipe(Point inputPoint, Size inputSize) :RectangleObject(inputPoint, inputSize)
+Pipe::Pipe(Point inputPoint, Size inputSize, bool isUp, int maxY) :RectangleObject(inputPoint, inputSize)
 {
-	;
+	IsLocationUp = isUp;
+	autoGenerateY(maxY);
 }
 Pipe::~Pipe()
 {
 
+}
+
+void Pipe::autoGenerateY(int maxY)
+{
+	Point pipePoint = GetPoint();
+	Size pipeSize = GetSize();
+	if (IsLocationUp)
+	{
+		pipePoint.y = maxY - pipeSize.height / 2;
+		SetPoint(pipePoint);
+	}
+	else
+	{
+		pipePoint.y = pipeSize.height / 2;
+		SetPoint(pipePoint);
+	}
+}
+
+void Pipe::setIsLocationUp(bool isUp)
+{
+	IsLocationUp = isUp;
 }
 
 //地图
@@ -117,14 +140,21 @@ void Map::update()
 {
 	if (m_pipes.empty())
 	{
-		Point newPoint(PIPEUP_INIT_CENTERX, PIPEUP_INIT_CENTERY);
-		Size newSize(PIPEUP_INIT_WIDTH, PIPEUP_INIT_HEIGHT);
-		Pipe* upPipe = new Pipe(newPoint, newSize);
+		Size birdSize = m_bird->GetSize();
 
-		Point newPoint_2(PIPEDOWN_INIT_CENTERX, PIPEDOWN_INIT_CENTERY);
-		Size newSize_2(PIPEDOWN_INIT_WIDTH, PIPEDOWN_INIT_HEIGHT);
-		Pipe* downPipe = new Pipe(newPoint_2, newSize_2);
+		std::default_random_engine e;
+		e.seed(unsigned(time(0)));
+		uniform_int_distribution<unsigned> u(PIPE_MIN_HEIGHT, m_maxY - PIPE_MIN_HEIGHT);
+		int randomPipeHeight = u(e);
+
+		Point newPoint(PIPEUP_INIT_CENTERX, 0);
+		Size newSize(PIPEUP_INIT_WIDTH, randomPipeHeight);
+		Pipe* upPipe = new Pipe(newPoint, newSize, true, m_maxY);
 		m_pipes.push_back(upPipe);
+
+		Point newPoint_2(PIPEDOWN_INIT_CENTERX, 0);
+		Size newSize_2(PIPEDOWN_INIT_WIDTH, max(0, m_maxY - randomPipeHeight - PIPE_EXPECT_BIRD_EXTRA_INTERVALY - birdSize.height));
+		Pipe* downPipe = new Pipe(newPoint_2, newSize_2, false, m_maxY);
 		m_pipes.push_back(downPipe);
 	}
 	else
@@ -194,7 +224,7 @@ void Map::setMaxMinXY(int minX, int minY, int maxX, int maxY)
 	m_maxY = maxY;
 }
 
-void Map::draw(CDC *pDC, CRect &rectPicture)
+void Map::fillBackground(CDC* pDC, CRect &rectPicture)
 {
 	CBrush newBrush;   // 用于创建新画刷
 	CBrush *pOldBrush; // 用于存放旧画刷
@@ -209,7 +239,10 @@ void Map::draw(CDC *pDC, CRect &rectPicture)
 	pDC->SelectObject(pOldBrush);
 	// 删除新画刷   
 	newBrush.DeleteObject();
+}
 
+void Map::drawBird(CDC *pDC, CRect &rectPicture)
+{
 	//画鸟
 	CPen newBirdPen;           // 用于创建新画笔
 	CPen *pOldBirdPen;         // 用于存放旧画笔
@@ -231,7 +264,10 @@ void Map::draw(CDC *pDC, CRect &rectPicture)
 	pDC->SelectObject(pOldBirdPen);
 	// 删除新画笔   
 	newBirdPen.DeleteObject();
+}
 
+void Map::drawPipe(CDC *pDC, CRect &rectPicture)
+{
 	//画管道
 	CPen newPipePen;           // 用于创建新画笔
 	CPen *pOldPipePen;         // 用于存放旧画笔
@@ -256,6 +292,13 @@ void Map::draw(CDC *pDC, CRect &rectPicture)
 	pDC->SelectObject(pOldPipePen);
 	// 删除新画笔   
 	newPipePen.DeleteObject();
+}
+
+void Map::draw(CDC *pDC, CRect &rectPicture)
+{
+	fillBackground(pDC, rectPicture);
+	drawBird(pDC, rectPicture);
+	drawPipe(pDC, rectPicture);
 }
 
 void Map::remove()

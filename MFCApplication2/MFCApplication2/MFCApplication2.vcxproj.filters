@@ -68,5 +68,14 @@
     <Image Include="res\MFCApplication2.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="Resources\bmp\test.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Resources\bmp\test.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

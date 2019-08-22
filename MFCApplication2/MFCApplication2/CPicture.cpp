@@ -52,6 +52,7 @@ void CPicture::OnTimer(UINT_PTR nIDEvent)
 	// （客户区坐标以窗口的左上角为原点，这区别于以屏幕左上角为原点的屏幕坐标）   
 	m_picDraw.GetClientRect(&rectPicture);
 	m_map->update();
+	//m_map->drawTest(m_picDraw.GetDC(), rectPicture, 1);
 	m_map->draw(m_picDraw.GetDC(), rectPicture);
 	if (m_map->isGameFinished())
 	{
@@ -109,7 +110,7 @@ BOOL CPicture::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 
 	CWnd *pWnd;
-	pWnd = GetDlgItem(IDC_DRAW); //获取控件指针，IDC_BUTTON1为控件ID号  
+	pWnd = GetDlgItem(IDC_DRAW); //获取控件指针，IDC_DRAW为控件ID号  
 	//pWnd->SetWindowPos(NULL, 50, 80, 0, 0, SWP_NOZORDER | SWP_NOSIZE); //把按钮移到窗口的(50,80)处  
 	//pWnd = GetDlgItem(IDC_DRAW);
 	//pWnd->SetWindowPos(NULL, 0, 0, 100, 80, SWP_NOZORDER | SWP_NOMOVE); //把编辑控件的大小设为(100,80)，位置不变  

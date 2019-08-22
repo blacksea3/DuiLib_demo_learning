@@ -10,24 +10,23 @@ using namespace std;
 #include "stdafx.h"
 #include "afxdialogex.h"
 
-#define BORDER_WIDTH 3
+#define BIRD_BMP_FILE "../Resources/bmp/bird.bmp"
 #define BIRD_INIT_CENTERX 0
 #define BIRD_INIT_CENTERY 100
-#define BIRD_INIT_WIDTH 100
-#define BIRD_INIT_HEIGHT 80
+#define BIRD_INIT_WIDTH 50
+#define BIRD_INIT_HEIGHT 50
 
-#define PIPEUP_INIT_CENTERX 350
-#define PIPEUP_INIT_CENTERY 300
-#define PIPEUP_INIT_WIDTH 100
+#define PIPE_BMP_FILE "../Resources/bmp/pipe.bmp"
+#define PIPE_INIT_CENTERX 350
+#define PIPE_INIT_WIDTH 20
 #define PIPE_MIN_HEIGHT 100
-#define PIPEDOWN_INIT_CENTERX 350
-#define PIPEDOWN_INIT_CENTERY 50
-#define PIPEDOWN_INIT_WIDTH 100
 
 #define PIPE_EXPECT_BIRD_EXTRA_INTERVALY 50 
 #define PIPE_SPEED 10
 #define UPDATE_INTERVAL 40 //ms
 #define BIRD_MOVEY_SPEED 20
+#define PIPE_ADD_INTERVAL 25 //表示多少个UPDATE_INTERVAL后出现管子
+
 
 //点, 包含x和y坐标
 struct Point
@@ -113,9 +112,13 @@ private:
 	int m_minY;
 	int m_maxX;
 	int m_maxY;
+	int m_timeCount;
+
 	void fillBackground(CDC* pDC, CRect &rectPicture);
 	void drawBird(CDC *pDC, CRect &rectPicture);
-	void Map::drawPipe(CDC *pDC, CRect &rectPicture);
+	void drawPipe(CDC *pDC, CRect &rectPicture);
+	void setClipRegion(CDC *pDC);
+
 public:
 	Map();
 	~Map();
@@ -127,6 +130,7 @@ public:
 	void addBirdY();
 	void minusBirdY();
 	void setMaxMinXY(int minX, int minY, int maxX, int maxY);
+	void drawTest(CDC *pDC, CRect &rectPicture, UINT pictureResource);
 };
 
 //画图, 全部都是静态方法, 不保存任何变量
@@ -135,4 +139,6 @@ class SimpleDraw
 public:
 	static vector<Point> SimpleDraw::FitBorderRectangle(Point inputPoint, 
 		Size inputSize, int maxx, int minx, int maxy, int miny);
+	static vector<int> SimpleDraw::GenerateFourPoints(Point inputPoint,
+		Size inputSize, int maxy);
 };
